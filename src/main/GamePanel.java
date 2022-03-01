@@ -8,8 +8,11 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import PickUp.Small;
-import entity.Ghost;
+import entity.BlueGhost;
+import entity.OrangeGhost;
+import entity.PinkGhost;
 import entity.Player;
+import entity.RedGhost;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -31,7 +34,10 @@ public class GamePanel extends JPanel implements Runnable{
 
 	//entities
 	Player player = new Player(this, kh, ch);
-	Ghost ghost = new Ghost(this, tm, player);
+	RedGhost redGhost = new RedGhost(this, tm, player, 10, 9);
+	PinkGhost pinkGhost = new PinkGhost(this, tm, player, 11, 9);
+	OrangeGhost orangeGhost = new OrangeGhost(this, tm, player, 9, 9);
+	BlueGhost blueGhost = new BlueGhost(this, tm, player, 10, 8, redGhost);
 	
 	//Items
 	Small sm = new Small(this, tm, player);
@@ -62,6 +68,9 @@ public class GamePanel extends JPanel implements Runnable{
 		while (gameThread != null) {
 			
 			update();
+			if(checkDeath()) {
+				gameThread = null;
+			}
 			repaint();
 			
 			try {
@@ -82,7 +91,10 @@ public class GamePanel extends JPanel implements Runnable{
 	//update entities
 	public void update() {
 		
-		ghost.update();
+		redGhost.update();
+		pinkGhost.update();
+		orangeGhost.update();
+		blueGhost.update();
 		player.update();
 		sm.update();
 	}
@@ -96,9 +108,25 @@ public class GamePanel extends JPanel implements Runnable{
 		tm.draw(g2);
 		sm.draw(g2);
 		player.draw(g2);
-		ghost.draw(g2);
+		redGhost.draw(g2);
+		pinkGhost.draw(g2);
+		orangeGhost.draw(g2);
+		blueGhost.draw(g2);
 		
 		g2.dispose();
+	}
+	
+	boolean checkDeath() {
+		
+		if(Math.abs(player.x - redGhost.x) < tileSize / 3 && Math.abs(player.y - redGhost.y) < tileSize / 3)
+			return true;
+		if(Math.abs(player.x - pinkGhost.x) < tileSize / 3 && Math.abs(player.y - pinkGhost.y) < tileSize / 3)
+			return true;
+		if(Math.abs(player.x - orangeGhost.x) < tileSize / 3 && Math.abs(player.y - orangeGhost.y) < tileSize / 3)
+			return true;
+		if(Math.abs(player.x - blueGhost.x) < tileSize / 3 && Math.abs(player.y - blueGhost.y) < tileSize / 3)
+			return true;
+		return false;
 	}
 }
 

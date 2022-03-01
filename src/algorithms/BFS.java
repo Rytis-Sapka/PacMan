@@ -3,6 +3,7 @@ package algorithms;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import entity.Player;
 import main.GamePanel;
 import tile.TileManager;
 
@@ -12,10 +13,12 @@ public class BFS {
 	TileManager tm;
 	int map[][];
 	int visitedMap[][];
+	Player p;
 	
-	public BFS(GamePanel gp, TileManager tm) {
+	public BFS(GamePanel gp, TileManager tm, Player p) {
 		this.gp = gp;
 		this.tm = tm;
+		this.p = p;
 		
 		map = new int[gp.rowNum][gp.rowNum];
 		initializeMap();
@@ -31,7 +34,7 @@ public class BFS {
 		}
 	}
 	
-	public node find(int x, int y, int finx, int finy) {
+	public node find(int x, int y, int finx, int finy, String direction) {
 		
 		node start = new node(x, y);
 		node end = new node(finx, finy);
@@ -42,7 +45,20 @@ public class BFS {
 				visitedMap[i][j] = map[i][j];
 			}
 		}
-				
+		
+		if(direction == "left")
+			if(isValid(x+1, y) && !(x+1 == finx && y == finy))
+				visitedMap[y][x+1] = 1;
+		if(direction == "right")
+			if(isValid(x-1, y) && !(x-1 == finx && y == finy))
+				visitedMap[y][x-1] = 1;
+		if(direction == "up")
+			if(isValid(x, y+1) && !(x == finx && y+1 == finy))
+				visitedMap[y+1][x] = 1;
+		if(direction == "down")
+			if(isValid(x, y-1) && !(x == finx && y-1 == finy))
+				visitedMap[y-1][x] = 1;
+		
 		Queue<node> q = new LinkedList<node>();
 		q.add(start);
 		node curr;
@@ -81,6 +97,14 @@ public class BFS {
 				}
 			}
 		}
+		
+		/*for (int i = 0; i < gp.rowNum; i++) {
+			for (int j = 0; j < gp.colNum; j++) {
+				System.out.printf("%d ", visitedMap[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();*/
 		
 		curr = end;
 		node ret = new node(end.x, end.y);
@@ -125,7 +149,34 @@ public class BFS {
 			}
 			else if(visitedMap[curr.y][curr.x] == 0)
 			{
-				System.out.println("Something's wrong");
+				System.out.printf("%d %d coordinates are not accessible", curr.x, curr.y);
+				System.exit(0);
+			}
+		}
+		
+		
+		if(ret.x == start.x && ret.y == start.y) {
+			
+			if(p.direction == "right") {
+				if (isValid(start.x+1, start.y) && visitedMap[start.y][start.x+1] != 1) {
+					ret.x++;
+				}
+			}
+			else if(isValid(start.x, start.y+1) && visitedMap[start.y+1][start.x] != 1) {
+				ret.y++;
+			}
+			else if(isValid(start.x+1, start.y) && visitedMap[start.y][start.x+1] != 1) {
+				ret.x++;
+			}
+			else if(isValid(start.x-1, start.y) && visitedMap[start.y][start.x-1] != 1) {
+				ret.x--;
+			}
+			else if(isValid(start.x, start.y-1) && visitedMap[start.y-1][start.x] != 1) {
+				ret.y--;
+			}
+			else {
+				System.out.printf("%d %d my man is stuck", ret.x, ret.y);
+				System.exit(0);
 			}
 		}
 		return ret;
