@@ -27,6 +27,9 @@ public class KeyHandler implements KeyListener{
 		// TODO Auto-generated method stub
 		int code = e.getKeyCode();
 		
+		// If a button is pressed it queues the movement
+		// If nothing is pressed, movement direction is given
+		
 		if (code == KeyEvent.VK_W) {
 			if (downPressed || leftPressed || rightPressed || upPressed) {
 				downNext = false;

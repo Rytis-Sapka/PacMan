@@ -5,6 +5,7 @@ import tile.TileManager;
 
 public class ColisionHandler {
 
+	//handlers and managers
 	GamePanel gp;
 	KeyHandler kh;
 	TileManager tm;
@@ -64,7 +65,7 @@ public class ColisionHandler {
 		}
 	}
 	
-	//Check if turn is avalable
+	//Check if turn is available
 	public void CheckTurn(Player en) {
 		
 		int tile;

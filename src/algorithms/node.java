@@ -1,5 +1,7 @@
 package algorithms;
 
+//basically just a pair :D
+
 public class node {
 	
 	public int x, y;

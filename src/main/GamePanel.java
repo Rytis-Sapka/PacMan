@@ -1,5 +1,10 @@
 package main;
 
+/**
+ * 	File containing information about the panel
+ * 	This is where most of the logic is executed
+ */
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,9 +27,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int tileSize = 36;
 	public final int colNum = 21;
 	public final int rowNum = 21;
-	final int screenWidth = tileSize * colNum;
-	final int screenHeight = tileSize * rowNum;
-	final int fps = 60;
+	public final int fps = 60;
 	
 	//Handlers and managers
 	KeyHandler kh = new KeyHandler();
@@ -46,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public GamePanel() {
 		
 		//panel settings
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		this.setPreferredSize(new Dimension(colNum * tileSize, rowNum * tileSize));
 		this.setDoubleBuffered(true);
 		this.setBackground(new Color(0, 0, 0));
 		this.addKeyListener(kh);
@@ -61,18 +64,17 @@ public class GamePanel extends JPanel implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		
-		//game loop
 		double timeInterval = 1000000000 / fps;
 		double updateTime = System.nanoTime() + timeInterval;
 		
+		//game loop
 		while (gameThread != null) {
 			
+			//update all game contents
 			update();
-			if(checkDeath()) {
-				gameThread = null;
-			}
 			repaint();
 			
+			//wait for new frame
 			try {
 				double remainingTime  = updateTime - System.nanoTime();
 				remainingTime /= 1000000;
@@ -97,6 +99,10 @@ public class GamePanel extends JPanel implements Runnable{
 		blueGhost.update();
 		player.update();
 		sm.update();
+		
+		if(checkDeath()) {
+			gameThread = null;
+		}
 	}
 	
 	//paint all

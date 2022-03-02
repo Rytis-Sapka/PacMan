@@ -1,20 +1,16 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-import algorithms.BFS;
-import algorithms.node;
+import javax.imageio.ImageIO;
+
 import main.GamePanel;
 import tile.TileManager;
 
-public class BlueGhost extends Entity {
+public class BlueGhost extends Ghost {
 
-	node target;
-	GamePanel gp;
-	TileManager tm;
-	BFS bfs;
-	Player p;
 	RedGhost rg;
 	
 	int toX;
@@ -22,35 +18,31 @@ public class BlueGhost extends Entity {
 	
 	public BlueGhost(GamePanel gp, TileManager tm, Player p, int strtX, int strtY, RedGhost rg) {
 		
-		this.p = p;
-		this.gp = gp;
-		this.tm = tm;
+		super(gp, tm, p);
 		this.rg = rg;
-		bfs = new BFS(gp, tm, p);
-		speed = 2;
 		
 		this.x = gp.tileSize * strtX;
 		this.y = gp.tileSize * strtY;
 		
+		try {
+			
+			up1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpLe.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftHi.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownLe.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightHi.png"));
+			
+			up2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpRi.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftLo.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownRi.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightLo.png"));
+			
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		getDestination();
 		target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX, toY, direction);
 		getDirection();
-	}
-	
-	void getDirection() {
-		
-		if(target.x * gp.tileSize == x) {
-			if(target.y * gp.tileSize > y)
-				direction = "down";
-			else
-				direction = "up";
-		}
-		else {
-			if(target.x * gp.tileSize > x)
-				direction = "right";
-			else
-				direction = "left";
-		}
 	}
 	
 	void getDestination() {
@@ -87,16 +79,34 @@ public class BlueGhost extends Entity {
 	
 	public void draw(Graphics2D g) {
 		
-		g.setColor(Color.blue);
-		g.fillRect(x, y, gp.tileSize, gp.tileSize);
+		BufferedImage image = down1;
+		
+		if (direction == "up") {
+			image = (spriteNum == 1) ? up1 : up2;
+		}
+		if (direction == "left") {
+			image = (spriteNum == 1) ? left1 : left2;
+		}
+		if (direction == "down") {
+			image = (spriteNum == 1) ? down1 : down2;
+		}
+		if (direction == "right") {
+			image = (spriteNum == 1) ? right1 : right2;
+		}
+		
+		g.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
 		
 	}
 	
 	public void update() {
 		
 		if(x == target.x * gp.tileSize && y == target.y * gp.tileSize) {
-			getDestination();
-			target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX, toY, direction);
+			if(inChase) {
+				getDestination();
+				target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX, toY, direction);
+			}
+			else
+				target = bfs.find(x / gp.tileSize, y / gp.tileSize, 18, 19, direction);
 			getDirection();
 		}
 		
@@ -111,6 +121,13 @@ public class BlueGhost extends Entity {
 		}
 		if(direction == "right") {
 			x += speed;
+		}
+		
+		spriteCounter++;
+		
+		if(spriteCounter > 20) {
+			spriteNum = (spriteNum == 1) ? 2 : 1;
+			spriteCounter = 0;
 		}
 	}
 }

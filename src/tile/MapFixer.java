@@ -2,6 +2,8 @@ package tile;
 
 import main.GamePanel;
 
+//a solid block of if statements to make the walls nice and rounded
+
 public class MapFixer {
 
 	GamePanel gp;
@@ -14,6 +16,7 @@ public class MapFixer {
 	//Makes corners correct
 	public void fixMap(int[][] mapTiles) {
 		
+		//middle cases
 		for (int i = 1; i < gp.rowNum - 1; i++) {
 			for (int j = 1; j < gp.colNum - 1; j++) {
 				if(mapTiles[i][j] < 16) {
@@ -54,6 +57,7 @@ public class MapFixer {
 			}
 		}
 		
+		//left and right columns
 		for (int i = 1; i < gp.colNum - 1; i++) {
 			if(mapTiles[0][i] < 16) {
 				
@@ -96,6 +100,7 @@ public class MapFixer {
 			}
 		}
 		
+		//top and bottom rows
 		for (int i = 1; i < gp.rowNum - 1; i++) {
 			
 			if(mapTiles[i][0] < 16) {
@@ -139,6 +144,7 @@ public class MapFixer {
 			}
 		}
 		
+		//top left
 		if(mapTiles[0][0] < 16) {
 			
 			if(mapTiles[0][1] >= 16 && mapTiles[1][0] >= 16) 
@@ -151,6 +157,7 @@ public class MapFixer {
 				mapTiles[0][0] = 7;
 		}
 		
+		//bottom left
 		if(mapTiles[gp.rowNum-1][0] < 16) {
 			
 			if(mapTiles[gp.rowNum-1][1] >= 16 && mapTiles[gp.rowNum-2][0] >= 16) 
@@ -163,6 +170,7 @@ public class MapFixer {
 				mapTiles[gp.rowNum-1][0] = 8;
 		}
 		
+		//top right
 		if(mapTiles[0][gp.colNum-1] < 16) {
 			
 			if(mapTiles[0][gp.colNum-2] >= 16 && mapTiles[1][gp.colNum-1] >= 16) 
@@ -175,6 +183,7 @@ public class MapFixer {
 				mapTiles[0][gp.colNum-1] = 6;
 		}
 		
+		//bottom right
 		if(mapTiles[gp.rowNum-1][gp.colNum-1] < 16) {
 			
 			if(mapTiles[gp.rowNum-1][gp.colNum-2] >= 16 && mapTiles[gp.rowNum-2][gp.colNum-1] >= 16) 
