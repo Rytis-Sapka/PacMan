@@ -6,14 +6,17 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener{
 
 	//Movement variables
-	public boolean upPressed;
-	public boolean downPressed;
-	public boolean leftPressed;
-	public boolean rightPressed;
-	public boolean upNext;
-	public boolean downNext;
-	public boolean leftNext;
-	public boolean rightNext;
+	private boolean upPressed;
+	private boolean downPressed;
+	private boolean leftPressed;
+	private boolean rightPressed;
+	private boolean upNext;
+	private boolean downNext;
+	private boolean leftNext;
+	private boolean rightNext;
+	
+	
+	
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -93,6 +96,71 @@ public class KeyHandler implements KeyListener{
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	//getters
+	public boolean isUpPressed() {
+		return upPressed;
+	}
+
+	public boolean isDownPressed() {
+		return downPressed;
+	}
+
+	public boolean isLeftPressed() {
+		return leftPressed;
+	}
+
+	public boolean isRightPressed() {
+		return rightPressed;
+	}
+
+	public boolean isUpNext() {
+		return upNext;
+	}
+
+	public boolean isDownNext() {
+		return downNext;
+	}
+
+	public boolean isLeftNext() {
+		return leftNext;
+	}
+
+	public boolean isRightNext() {
+		return rightNext;
+	}
+
+	public void setUpPressed(boolean upPressed) {
+		this.upPressed = upPressed;
+	}
+
+	public void setDownPressed(boolean downPressed) {
+		this.downPressed = downPressed;
+	}
+
+	public void setLeftPressed(boolean leftPressed) {
+		this.leftPressed = leftPressed;
+	}
+
+	public void setRightPressed(boolean rightPressed) {
+		this.rightPressed = rightPressed;
+	}
+
+	public void setUpNext(boolean upNext) {
+		this.upNext = upNext;
+	}
+
+	public void setDownNext(boolean downNext) {
+		this.downNext = downNext;
+	}
+
+	public void setLeftNext(boolean leftNext) {
+		this.leftNext = leftNext;
+	}
+
+	public void setRightNext(boolean rightNext) {
+		this.rightNext = rightNext;
 	}
 	
 }

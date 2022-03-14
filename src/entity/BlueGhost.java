@@ -1,7 +1,5 @@
 package entity;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -21,54 +19,54 @@ public class BlueGhost extends Ghost {
 		super(gp, tm, p);
 		this.rg = rg;
 		
-		this.x = gp.tileSize * strtX;
-		this.y = gp.tileSize * strtY;
+		this.x = tileSize * strtX;
+		this.y = tileSize * strtY;
 		
 		try {
 			
-			up1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpLe.png"));
-			left1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftHi.png"));
-			down1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownLe.png"));
-			right1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightHi.png"));
+			up2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpLe.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftHi.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownLe.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightHi.png"));
 			
-			up2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpRi.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftLo.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownRi.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightLo.png"));
+			up1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueUpRi.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueLeftLo.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueDownRi.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/BlueRightLo.png"));
 			
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 		
 		getDestination();
-		target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX, toY, direction);
+		target = bfs.find(x / tileSize, y / tileSize, toX, toY, direction);
 		getDirection();
 	}
 	
 	void getDestination() {
 		
-		toX = p.x / gp.tileSize - (rg.x / gp.tileSize - p.x / gp.tileSize);
-		toY = p.y / gp.tileSize - (rg.y / gp.tileSize - p.y / gp.tileSize);
+		toX = p.x / tileSize - (rg.x / tileSize - p.x / tileSize);
+		toY = p.y / tileSize - (rg.y / tileSize - p.y / tileSize);
 		
 		if(toX < 0)
 			toX = 0;
-		if(toX >= gp.colNum)
-			toX = gp.colNum - 1;
+		if(toX >= colNum)
+			toX = colNum - 1;
 		if(toY < 0)
 			toY = 0;
-		if(toY >= gp.rowNum)
-			toY = gp.rowNum - 1;
+		if(toY >= rowNum)
+			toY = rowNum - 1;
 		
 		while(tm.mapTiles[toY][toX] <= 16) {
 			
-			if(Math.abs(toY - p.y / gp.tileSize) > Math.abs(toX - p.x / gp.tileSize)) {
-				if(toY - p.y / gp.tileSize > 0)
+			if(Math.abs(toY - p.y / tileSize) > Math.abs(toX - p.x / tileSize)) {
+				if(toY - p.y / tileSize > 0)
 					toY--;
 				else
 					toY++;
 			}
 			else {
-				if(toX - p.x / gp.tileSize > 0)
+				if(toX - p.x / tileSize > 0)
 					toX--;
 				else
 					toX++;
@@ -77,36 +75,15 @@ public class BlueGhost extends Ghost {
 		
 	}
 	
-	public void draw(Graphics2D g) {
-		
-		BufferedImage image = down1;
-		
-		if (direction == "up") {
-			image = (spriteNum == 1) ? up1 : up2;
-		}
-		if (direction == "left") {
-			image = (spriteNum == 1) ? left1 : left2;
-		}
-		if (direction == "down") {
-			image = (spriteNum == 1) ? down1 : down2;
-		}
-		if (direction == "right") {
-			image = (spriteNum == 1) ? right1 : right2;
-		}
-		
-		g.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
-		
-	}
-	
 	public void update() {
 		
-		if(x == target.x * gp.tileSize && y == target.y * gp.tileSize) {
+		if(x == target.x * tileSize && y == target.y * tileSize) {
 			if(inChase) {
 				getDestination();
-				target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX, toY, direction);
+				target = bfs.find(x / tileSize, y / tileSize, toX, toY, direction);
 			}
 			else
-				target = bfs.find(x / gp.tileSize, y / gp.tileSize, 18, 19, direction);
+				target = bfs.find(x / tileSize, y / tileSize, 18, 19, direction);
 			getDirection();
 		}
 		
@@ -122,6 +99,8 @@ public class BlueGhost extends Ghost {
 		if(direction == "right") {
 			x += speed;
 		}
+		
+		loop();
 		
 		spriteCounter++;
 		

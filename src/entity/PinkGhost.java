@@ -1,7 +1,8 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import tile.TileManager;
@@ -14,11 +15,29 @@ public class PinkGhost extends Ghost {
 	public PinkGhost(GamePanel gp, TileManager tm, Player p, int strtX, int strtY) {
 		
 		super(gp, tm, p);
-		this.x = gp.tileSize * strtX;
-		this.y = gp.tileSize * strtY;
+		
+		this.x = tileSize * strtX;
+		this.y = tileSize * strtY;
+		
+		
+		try {
+			
+			up2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkUpLe.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkLeftHi.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkDownLe.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkRightHi.png"));
+			
+			up1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkUpRi.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkLeftLo.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkDownRi.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/ghosts/PinkRightLo.png"));
+			
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		
 		getDestination();
-		target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX / gp.tileSize, toY / gp.tileSize, direction);
+		target = bfs.find(x / tileSize, y / tileSize, toX / tileSize, toY / tileSize, direction);
 		getDirection();
 	}
 	
@@ -26,35 +45,35 @@ public class PinkGhost extends Ghost {
 		
 		if(p.direction == "up") {
 			
-			toY = p.y - 3 * gp.tileSize;
+			toY = p.y - 3 * tileSize;
 			toY = Math.max(toY, 0);
-			while(tm.mapTiles[toY / gp.tileSize][p.x / gp.tileSize] <= 16)
-				toY += gp.tileSize;
+			while(tm.mapTiles[toY / tileSize][p.x / tileSize] <= 16)
+				toY += tileSize;
 			toX = p.x;
 		}
 		else if(p.direction == "left") {
 
-			toX = p.x - 3 * gp.tileSize;
+			toX = p.x - 3 * tileSize;
 			toX = Math.max(toX, 0);
-			while(tm.mapTiles[p.y / gp.tileSize][toX / gp.tileSize] <= 16) {
-				toX += gp.tileSize;
+			while(tm.mapTiles[p.y / tileSize][toX / tileSize] <= 16) {
+				toX += tileSize;
 			}
 			toY = p.y;
 		}
 		else if(p.direction == "down") {
 
-			toY = p.y + 3 * gp.tileSize;
-			toY = Math.min(toY, (gp.rowNum - 1) * gp.tileSize);
-			while(tm.mapTiles[toY / gp.tileSize][p.x / gp.tileSize] <= 16)
-				toY -= gp.tileSize;
+			toY = p.y + 3 * tileSize;
+			toY = Math.min(toY, (rowNum - 1) * tileSize);
+			while(tm.mapTiles[toY / tileSize][p.x / tileSize] <= 16)
+				toY -= tileSize;
 			toX = p.x;
 		}
 		else if(p.direction == "right") {
 			
-			toX = p.x + 3 * gp.tileSize;
-			toX = Math.min(toX, (gp.colNum - 1) * gp.tileSize);
-			while(tm.mapTiles[p.y / gp.tileSize][toX / gp.tileSize] <= 16)
-				toX -= gp.tileSize;
+			toX = p.x + 3 * tileSize;
+			toX = Math.min(toX, (colNum - 1) * tileSize);
+			while(tm.mapTiles[p.y / tileSize][toX / tileSize] <= 16)
+				toX -= tileSize;
 			toY = p.y;
 		}
 		else {
@@ -63,22 +82,15 @@ public class PinkGhost extends Ghost {
 		}
 	}
 	
-	public void draw(Graphics2D g) {
-		
-		g.setColor(Color.pink);
-		g.fillRect(x, y, gp.tileSize, gp.tileSize);
-		
-	}
-	
 	public void update() {
 		
-		if(x == target.x * gp.tileSize && y == target.y * gp.tileSize) {
+		if(x == target.x * tileSize && y == target.y * tileSize) {
 			if(inChase) {
 				getDestination();
-				target = bfs.find(x / gp.tileSize, y / gp.tileSize, toX / gp.tileSize, toY / gp.tileSize, direction);
+				target = bfs.find(x / tileSize, y / tileSize, toX / tileSize, toY / tileSize, direction);
 			}
 			else {
-				target = bfs.find(x / gp.tileSize, y / gp.tileSize, 2, 1, direction);
+				target = bfs.find(x / tileSize, y / tileSize, 2, 1, direction);
 			}
 			getDirection();
 		}
@@ -94,6 +106,15 @@ public class PinkGhost extends Ghost {
 		}
 		if(direction == "right") {
 			x += speed;
+		}
+		
+		loop();
+		
+		spriteCounter++;
+		
+		if(spriteCounter > 20) {
+			spriteNum = (spriteNum == 1) ? 2 : 1;
+			spriteCounter = 0;
 		}
 	}
 }

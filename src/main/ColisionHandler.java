@@ -9,12 +9,19 @@ public class ColisionHandler {
 	GamePanel gp;
 	KeyHandler kh;
 	TileManager tm;
+	int tileSize;
+	int colNum;
+	int rowNum;
 	
 	//Initialize variables
 	public ColisionHandler(GamePanel gp, KeyHandler kh, TileManager tm) {
 		this.gp = gp;
 		this.kh = kh;
 		this.tm = tm;
+		
+		tileSize = gp.getTileSize();
+		colNum = gp.getRowNum();
+		rowNum = gp.getRowNum();
 	}
 	
 	//Stop if wall hit
@@ -22,45 +29,49 @@ public class ColisionHandler {
 		
 		int tile;
 		
-		if (kh.rightPressed) {
-			tile = (en.x + gp.tileSize + en.speed - 1) / gp.tileSize;
-			if (tm.mapTiles[en.y / gp.tileSize][tile] < 16 || en.y % gp.tileSize != 0) {
-				kh.rightPressed = false;
-				kh.downNext = false;
-				kh.rightNext = false;
-				kh.upNext = false;
-				kh.leftNext = false;
+		if (kh.isRightPressed()) {
+			tile = (en.x + tileSize + en.speed - 1) / tileSize;
+			tile %= colNum;
+			if (tm.mapTiles[en.y / tileSize][tile] < 16 || en.y % tileSize != 0) {
+				kh.setRightPressed(false);
+				kh.setDownNext(false);
+				kh.setRightNext(false);
+				kh.setUpNext(false);
+				kh.setLeftNext(false);
 			}
 
 		}
-		else if (kh.upPressed) {
-			tile = (en.y - en.speed + 1) / gp.tileSize;
-			if (tm.mapTiles[tile][en.x / gp.tileSize] < 16 || en.x % gp.tileSize != 0) {
-				kh.upPressed = false;
-				kh.downNext = false;
-				kh.rightNext = false;
-				kh.upNext = false;
-				kh.leftNext = false;
+		else if (kh.isUpPressed()) {
+			tile = (en.y - en.speed + 1) / tileSize;
+			tile %= rowNum;
+			if (tm.mapTiles[tile][en.x / tileSize] < 16 || en.x % tileSize != 0) {
+				kh.setUpPressed(false);
+				kh.setDownNext(false);
+				kh.setRightNext(false);
+				kh.setUpNext(false);
+				kh.setLeftNext(false);
 			}
 		}
-		else if (kh.leftPressed) {
-			tile = (en.x - en.speed + 1) / gp.tileSize;
-			if (tm.mapTiles[en.y / gp.tileSize][tile] < 16 || en.y % gp.tileSize != 0) {
-				kh.leftPressed = false;
-				kh.downNext = false;
-				kh.rightNext = false;
-				kh.upNext = false;
-				kh.leftNext = false;
+		else if (kh.isLeftPressed()) {
+			tile = (en.x - en.speed + 1) / tileSize;
+			tile %= colNum;
+			if (tm.mapTiles[en.y / tileSize][tile] < 16 || en.y % tileSize != 0) {
+				kh.setLeftPressed(false);
+				kh.setDownNext(false);
+				kh.setRightNext(false);
+				kh.setUpNext(false);
+				kh.setLeftNext(false);
 			}
 		}
-		else if (kh.downPressed) {
-			tile = (en.y + gp.tileSize + en.speed - 1) / gp.tileSize;
-			if (tm.mapTiles[tile][en.x / gp.tileSize] < 16 || en.x % gp.tileSize != 0) {
-				kh.downPressed = false;
-				kh.downNext = false;
-				kh.rightNext = false;
-				kh.upNext = false;
-				kh.leftNext = false;
+		else if (kh.isDownPressed()) {
+			tile = (en.y + tileSize + en.speed - 1) / tileSize;
+			tile %= rowNum;
+			if (tm.mapTiles[tile][en.x / tileSize] < 16 || en.x % tileSize != 0) {
+				kh.setDownPressed(false);
+				kh.setDownNext(false);
+				kh.setRightNext(false);
+				kh.setUpNext(false);
+				kh.setLeftNext(false);
 			}
 		}
 	}
@@ -70,48 +81,54 @@ public class ColisionHandler {
 		
 		int tile;
 		
-		if(kh.upNext) {
+		if(kh.isUpNext()) {
 			
-			tile = (en.y - en.speed + 1) / gp.tileSize;
-			if (tm.mapTiles[tile][en.x / gp.tileSize] >= 16 && en.x % gp.tileSize == 0) {
-				kh.upNext = false;
-				kh.upPressed = true;
-				kh.leftPressed = false;
-				kh.downPressed = false;
-				kh.rightPressed = false;
+			tile = (en.y - en.speed + 1) / tileSize;
+			if(tile < 0)
+				tile = rowNum + tile;
+			if (tm.mapTiles[tile][en.x / tileSize] >= 16 && en.x % tileSize == 0) {
+				kh.setUpNext(false);
+				kh.setUpPressed(true);
+				kh.setLeftPressed(false);
+				kh.setDownPressed(false);
+				kh.setRightPressed(false);
 			}	
 		}
-		if(kh.leftNext) {
+		if(kh.isLeftNext()) {
 			
-			tile = (en.x - en.speed + 1) / gp.tileSize;
-			if (tm.mapTiles[en.y / gp.tileSize][tile] >= 16 && en.y % gp.tileSize == 0) {
-				kh.leftNext = false;
-				kh.upPressed = false;
-				kh.leftPressed = true;
-				kh.downPressed = false;
-				kh.rightPressed = false;
+			tile = (en.x - en.speed + 1) / tileSize;
+			if(tile < 0)
+				tile = colNum + tile;
+			if (tm.mapTiles[en.y / tileSize][tile] >= 16 && en.y % tileSize == 0) {
+				kh.setLeftNext(false);
+				kh.setUpPressed(false);
+				kh.setLeftPressed(true);
+				kh.setDownPressed(false);
+				kh.setRightPressed(false);
 			}	
 		}
-		if(kh.downNext) {
+		if(kh.isDownNext()) {
 			
-			tile = (en.y + gp.tileSize + en.speed - 1) / gp.tileSize;
-			if (tm.mapTiles[tile][en.x / gp.tileSize] >= 16 && en.x % gp.tileSize == 0) {
-				kh.downNext = false;
-				kh.upPressed = false;
-				kh.leftPressed = false;
-				kh.downPressed = true;
-				kh.rightPressed = false;
+			tile = (en.y + tileSize + en.speed - 1) / tileSize;
+			tile %= rowNum;
+			if (tm.mapTiles[tile][en.x / tileSize] >= 16 && en.x % tileSize == 0) {
+				kh.setDownNext(false);
+				kh.setUpPressed(false);
+				kh.setLeftPressed(false);
+				kh.setDownPressed(true);
+				kh.setRightPressed(false);
 			}	
 		}
-		if(kh.rightNext) {
+		if(kh.isRightNext()) {
 			
-			tile = (en.x + gp.tileSize + en.speed - 1) / gp.tileSize;
-			if (tm.mapTiles[en.y / gp.tileSize][tile] >= 16 && en.y % gp.tileSize == 0) {
-				kh.rightNext = false;
-				kh.upPressed = false;
-				kh.leftPressed = false;
-				kh.downPressed = false;
-				kh.rightPressed = true;
+			tile = (en.x + tileSize + en.speed - 1) / tileSize;
+			tile %= colNum;
+			if (tm.mapTiles[en.y / tileSize][tile] >= 16 && en.y % tileSize == 0) {
+				kh.setRightNext(false);
+				kh.setUpPressed(false);
+				kh.setLeftPressed(false);
+				kh.setDownPressed(false);
+				kh.setRightPressed(true);
 			}	
 		}
 	}

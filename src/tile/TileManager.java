@@ -24,12 +24,21 @@ public class TileManager {
 	//map
 	public int mapTiles[][];
 	
+	int tileSize;
+	int rowNum;
+	int colNum;
+	
 	//initialize values, load map
 	public TileManager(GamePanel gp) {
 		
 		this.gp = gp;
+		
+		tileSize = gp.getTileSize();
+		rowNum = gp.getRowNum();
+		colNum = gp.getColNum();
+		
 		tile = new Tile[20];
-		mapTiles = new int[gp.rowNum][gp.colNum];
+		mapTiles = new int[rowNum][colNum];
 		
 		getTileImage();
 		loadMap("/maps/map1.txt");
@@ -98,8 +107,8 @@ public class TileManager {
 			e.printStackTrace();
 		}
 		
-		for (int i = 0; i < gp.rowNum; i++) {
-			for (int j = 0; j < gp.colNum; j++) {
+		for (int i = 0; i < rowNum; i++) {
+			for (int j = 0; j < colNum; j++) {
 				mapTiles[i][j] = fin.nextInt();
 			}
 		}
@@ -108,11 +117,11 @@ public class TileManager {
 	//draw tile grid
 	public void draw(Graphics2D g2) {
 		
-		for (int i = 0; i < gp.rowNum; i++) {
-			for (int j = 0; j < gp.colNum; j++) {
+		for (int i = 0; i < rowNum; i++) {
+			for (int j = 0; j < colNum; j++) {
 				if (mapTiles[i][j] < 16) {
 					BufferedImage image = tile[mapTiles[i][j]].image;
-					g2.drawImage(image, j * gp.tileSize, i * gp.tileSize, gp.tileSize, gp.tileSize, null);
+					g2.drawImage(image, j * tileSize, i * tileSize, tileSize, tileSize, null);
 				}
 			}
 		}

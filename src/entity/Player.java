@@ -16,6 +16,10 @@ public class Player extends Entity{
 	KeyHandler kh;
 	ColisionHandler ch;
 	
+	int tileSize;
+	int colNum;
+	int rowNum;
+	
 	//initialize variables and set values
 	public Player(GamePanel gp, KeyHandler kh, ColisionHandler ch) {
 		
@@ -23,8 +27,12 @@ public class Player extends Entity{
 		this.kh = kh;
 		this.ch = ch;
 		
-		x = gp.tileSize * 10;
-		y = gp.tileSize * 11;
+		tileSize = gp.getTileSize();
+		colNum = gp.getColNum();
+		rowNum = gp.getRowNum();
+		
+		x = tileSize * 10;
+		y = tileSize * 11;
 		speed = 2;
 		
 		getPlayerImage();
@@ -54,23 +62,28 @@ public class Player extends Entity{
 		
 		ch.CheckTurn(this);
 		ch.CheckCollision(this);
-		//System.out.println(kh.upNext);
 		
-		if (kh.upPressed) {
+		if (kh.isUpPressed()) {
 			direction = "up";
 			y -= speed;
+			if(y < 0)
+				y = rowNum * tileSize + y;
 		}
-		if (kh.downPressed) {
+		if (kh.isDownPressed()) {
 			direction = "down";
 			y += speed;
+			y %= colNum * tileSize;
 		}
-		if (kh.leftPressed) {
+		if (kh.isLeftPressed()) {
 			direction = "left";
 			x -= speed;
+			if(x < 0)
+				x = colNum * tileSize + x;
 		}
-		if (kh.rightPressed) {
+		if (kh.isRightPressed()) {
 			direction = "right";
 			x += speed;
+			x %= colNum * tileSize;
 		}
 		
 		spriteCounter++;
@@ -99,6 +112,10 @@ public class Player extends Entity{
 			image = (spriteNum == 1) ? right1 : right2;
 		}
 		
-		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, x, y, tileSize, tileSize, null);
+		if (x > (colNum - 1) * tileSize)
+			g2.drawImage(image, x - colNum * tileSize, y, tileSize, tileSize, null);
+		if (y > (rowNum - 1) * tileSize)
+			g2.drawImage(image, x, y - rowNum * tileSize, tileSize, tileSize, null);
 	}
 }
